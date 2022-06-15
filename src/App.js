@@ -8,6 +8,8 @@ function App() {
   const [query, setQuery] = useState("");
   // A filter is often used to group data by a specific keyword. 
   const [filter, setFilter] = useState("");
+  //Pagination reduces list of items displayed & increases app's performance
+  const [paginate, setpaginate] = useState(8);
 
   useEffect(() => {
       //         const request_headers = new Headers();
@@ -51,6 +53,11 @@ function App() {
       );
   }
 
+  // paginate function - updates State anytime function is called
+  const load_more = (event) => {
+    setpaginate((prevValue) => prevValue + 8);
+  };
+
   if (error) {
       return <>{error.message}</>;
   } else if (!loaded) {
@@ -93,7 +100,10 @@ function App() {
 
               <ul className="card-grid">
                 {/* 4) use new data returned from "search(data)" function to build the country list*/}
-                  {search(data).map((item) => (
+                  {search(data)
+                  // "paginate" value updates the countries list 
+                  .slice(0, paginate)
+                  .map((item) => (
                       <li key={item.alpha3Code}>
                           <article className="card">
                               <div className="card-image">
@@ -121,6 +131,7 @@ function App() {
                       </li>
                   ))}
               </ul>
+              <button onClick={load_more}>Load More</button>
           </div>
       );
   }
